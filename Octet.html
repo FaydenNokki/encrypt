@@ -1,0 +1,248 @@
+<!-- This is a draft note document -->
+<!-- #WIP -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Octet</title>
+</head>
+
+<body>
+    <div>
+        <h1>NOTE-WEB ASSET THEFT PREVENTION</h1>
+        <p>
+            During an afterhour discussion.
+            An idea suddenly came in. <br>
+            -As Chrome F12 is available <br>
+            -Whatever you put up into your pages <br>
+            -Fonts Images Audios Videos <br>
+            -Visitors may get a copy from the F12 <br>
+            -Even you introduced some anti-copy methods <br>
+            The challenge would like to be: <br>
+            <span style="color: red;"> HOW TO MAKE IT HARDER TO COPY
+                AND IT IS STILL BEING DISPLAYED </span>
+
+        <p>peer comment:
+            Not necessary, too complicated.
+        </p>
+    </div>
+
+    <p>the approach would be like:
+        <br>the very first html file and script chunk is delivered by a single text/html file
+        and everything else is responded via application/octet-stream, with each of the bytes are altered
+        <br>then let scripts do all the request-unpack/decrypt-present
+        <br>ALONGSIDE Selections and Context Menus DISABLED, and NOSCRIPT tag is inplay
+    </p>
+    <h2>The part below is a day-off experimental prototype (or draft)</h2>
+
+    <div>
+        This is a js chunk, stored in host server
+    </div>
+
+    <script id="script2send">const TwoPlusTwo = function () { return "5" }</script>
+
+    <div style="background-color: red;" id="scriptpeek">
+    </div>
+
+    <script id="runtimechunk0">
+        var rawstr = document.querySelector('#script2send').text
+        // document.addEventListener("DOMContentLoaded", () => {
+        // console.log(document.querySelector('#script2send').text)
+        document.getElementById('scriptpeek').innerText = rawstr
+        // })
+    </script>
+
+    <div>
+        The function inside returns
+    </div>
+    <div style="background-color: red;" id="scriptoutcome">
+        <br>
+    </div>
+    <script id="runtimechunk1">
+        document.getElementById('scriptoutcome').innerText = TwoPlusTwo()
+    </script>
+
+    <div>
+        in bytestream or UInt8Array form <br>
+        the script will be like
+    </div>
+    <div style="background-color: red;" id="byteraw">
+    </div>
+    <script id="strtoU8A">
+        var RAWU8W = new TextEncoder().encode(rawstr)
+        console.log(RAWU8W)
+        var byteraw = ""
+        for (index in RAWU8W) {
+            byteraw += RAWU8W[index]
+            if (index % 8 == 7) {
+                byteraw += '\r'
+            }
+            else {
+                byteraw += ' '
+            }
+        }
+        console.log(byteraw)
+        document.querySelector('#byteraw').innerText = byteraw
+    </script>
+
+    <div>
+        in hex
+    </div>
+    <div style="background-color: red;" id="hexraw">
+    </div>
+    <script>
+        var HEXRAW = []
+        for (index in RAWU8W) {
+            HEXRAW[index] = RAWU8W[index].toString(16)
+
+        }
+        console.log(HEXRAW)
+        var RAWHEX = ""
+        for (index in HEXRAW) {
+            RAWHEX += HEXRAW[index].toString()
+            if (index % 8 == 7) {
+                if (index % 16 == 15) {
+                    RAWHEX += '\r'
+                }
+                else {
+                    RAWHEX += '　'//This space is a full width space
+                }
+            }
+            else {
+                RAWHEX += ' '
+            }
+        }
+        console.log(RAWHEX)
+        document.querySelector('#hexraw').innerText = RAWHEX
+    </script>
+
+    <div>Current sample is using UnixTime bitwise-and 255 <br>timestamp in use</div>
+    <div id="flavoring" style="background-color: yellow;"></div>
+    <script>
+        var flavor = Date.now()
+        document.querySelector('#flavoring').innerText = flavor</script>
+
+    <div> timestamp in binary </div>
+    <div id="flavoringbin" style="background-color: yellow;"></div>
+    <script>
+        var flavorbin = (flavor >>> 0).toString(2)
+        document.querySelector('#flavoringbin').innerText = flavorbin</script>
+    <div>
+        bitwise outcome </div>
+    <div id="pepperjar" style="background-color: yellow;"></div>
+    <script>
+        var pepperjar = flavor & 255
+        document.querySelector('#pepperjar').innerText = pepperjar
+    </script>
+
+    <div>in binary</div>
+    <div id="jarbin" style="background-color: yellow;"></div>
+    <script>
+        var jarbin = (pepperjar >>> 0).toString(2)
+        document.querySelector('#jarbin').innerText = jarbin</script>
+
+    <div>
+        and the response bytestream would be like this
+        <br>
+        in application/octet-stream
+    </div>
+    <div style="background-color: red;" id="dataonair"></div>
+    <script>
+        var AIRU8A = RAWU8W
+
+        console.log(AIRU8A)
+        for (index in AIRU8A) {
+            AIRU8A[index] = AIRU8A[index] - pepperjar
+            console.log(AIRU8A)
+        }
+        console.log(AIRU8A)
+        var byteair = ""
+        for (index in AIRU8A) {
+            byteair += AIRU8A[index]
+            if (index % 8 == 7) {
+                byteair += '\r'
+            }
+            else {
+                byteair += ' '
+            }
+        }
+        document.querySelector('#dataonair').innerText = byteair
+    </script>
+    <div>in hex</div>
+    <div style="background-color: red;" id="hexair">
+    </div>
+    <script>
+        var HEXAIR = []
+        for (index in AIRU8A) {
+            HEXAIR[index] = AIRU8A[index].toString(16)
+
+        }
+        console.log(AIRU8A)
+        var AIRHEX = ""
+        for (index in HEXAIR) {
+            AIRHEX += HEXAIR[index].toString()
+            if (index % 8 == 7) {
+                if (index % 16 == 15) {
+                    AIRHEX += '\r'
+                }
+                else {
+                    AIRHEX += '　'//This space is a full width space
+                }
+            }
+            else {
+                AIRHEX += ' '
+            }
+        }
+        console.log(AIRHEX)
+        document.querySelector('#hexair').innerText = AIRHEX
+    </script>
+    <div>
+        now, visitor browser, do the reverse process
+    </div>
+
+    <div style="background-color: greenyellow;" id="resdec">
+    </div>
+    <script>
+        var RESU8A = AIRU8A
+        console.log(RESU8A)
+        for (index in RESU8A) {
+            RESU8A[index] = RESU8A[index] + pepperjar
+            console.log(RESU8A)
+        }
+        console.log(RESU8A)
+        var bytedec = ""
+        for (index in RESU8A) {
+            bytedec += AIRU8A[index]
+            if (index % 8 == 7) {
+                bytedec += '\r'
+            }
+            else {
+                bytedec += ' '
+            }
+        }
+        document.querySelector('#resdec').innerText = bytedec
+    </script>
+    <div>and then we have execuatable js chunk</div>
+    <div style="background-color: greenyellow;" id="execuatable">
+    </div>
+    <script>
+        var xqt = new TextDecoder().decode(RESU8A)
+        document.querySelector('#execuatable').innerText = xqt
+    </script>
+
+    <br>
+    <div>
+        This is a WIP note draft <br>
+        (MDN standard API ONLY) <br>
+        Any further ideas? <br>
+        you may DM: <br>
+        Twitter/@Nokki_Fayden <br>
+        Github/@Vestian</div>
+
+</body>
+
+</html>
